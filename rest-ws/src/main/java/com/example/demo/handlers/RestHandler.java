@@ -16,6 +16,6 @@ public class RestHandler {
 
     @GetMapping("/greeting")
     public String greeting() {
-        return "Greetings!";
+        return testService.greet();
     }
 }
