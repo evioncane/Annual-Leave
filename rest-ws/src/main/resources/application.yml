@@ -1,0 +1,11 @@
+app:
+  name: Annual Leave
+  api:
+    title: Annual Leave APIs
+    version: 1.0.0
+    description: Spring Boot APIs description
+    base-package: com.example.demo.handlers
+    contact-name: apisupportgroup
+    contact-email: apisupportgroup@abc.com
+    swagger:
+      enable: true
