@@ -10,7 +10,7 @@
 		<module>front-end</module>
 	</modules>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>annual-leave</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>annual-leave</name>
 	<description>Annual Leave Demo</description>
