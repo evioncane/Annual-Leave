@@ -7,13 +7,20 @@ import com.example.demo.payloads.auth.SignUpResponse;
 import com.example.demo.payloads.auth.SignupRequest;
 import com.example.demo.service.auth.AuthenticationService;
 import com.example.demo.service.dto.JwtLogInDetails;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -27,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             JwtLogInDetails logInDetails = this.authenticationService.authenticateUser(loginRequest.getUsername(),
                     loginRequest.getPassword());
@@ -38,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> authenticateUser(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignupRequest signupRequest) {
         try {
             this.authenticationService.registerUser(signupRequest.getUsername(), signupRequest.getEmail(),
                     signupRequest.getPassword(), signupRequest.getPasswordConfirmation(), signupRequest.getFirstName(),
@@ -47,5 +54,15 @@ public class AuthController {
         } catch (RegistrationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<String>> handleError(MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
