@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.service.TestService;
+import com.example.demo.model.UserEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -12,13 +12,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AnnualLeaveApplicationTests {
 
-	@Mock
-	TestService testService;
-
 	@Test
-	public void contextLoads() {
-		when(testService.greet()).thenReturn("Hello");
-		assertEquals(testService.greet(), "Hello");
+	public void lombok() {
+		UserEntity user = new UserEntity();
+		user.setUsername("Joni");
 	}
 
 }

@@ -4,9 +4,9 @@ app:
     title: Annual Leave APIs
     version: 1.0.0
     description: Spring Boot APIs description
-    base-package: com.example.demo.handlers
-    contact-name: apisupportgroup
-    contact-email: apisupportgroup@abc.com
+    base-package: com.example.demo.controllers
+    contact-name: Evion Cane
+    contact-email: evioncane@gmail.com
     swagger:
       enable: true
 
@@ -17,3 +17,14 @@ spring:
     password: user
     platform: mysql
     initialization-mode: always
+    data: classpath:sql/data.sql
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+security:
+  config:
+    jwtSecret: secret
+    jwtExpirationMs: 86400000
