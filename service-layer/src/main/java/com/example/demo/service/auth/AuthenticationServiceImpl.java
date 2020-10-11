@@ -9,6 +9,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.security.services.UserDetailsImpl;
 import com.example.demo.service.dto.JwtLogInDetails;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +31,8 @@ import static com.example.demo.util.Constants.WRONG_CREDENTIALS;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+
+    private static final Logger logger = LogManager.getLogger(AuthenticationServiceImpl.class);
 
     private final AuthenticationManager authenticationManager;
 
@@ -65,6 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return new JwtLogInDetails(jwt, userDetails.getUsername(), userDetails.getEmail(), roles);
         } catch (AuthenticationException e) {
+            logger.error("User({}) tried to log in but failed!", username);
             throw new LogInException(WRONG_CREDENTIALS);
         }
     }
