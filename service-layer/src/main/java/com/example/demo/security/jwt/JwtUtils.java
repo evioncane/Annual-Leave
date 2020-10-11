@@ -1,6 +1,6 @@
 package com.example.demo.security.jwt;
 
-import com.example.demo.security.services.UserDetailsImpl;
+import com.example.demo.security.services.user.UserDetailsImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;

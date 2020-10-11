@@ -1,4 +1,4 @@
-package com.example.demo.exceptions;
+package com.example.demo.exceptions.auth;
 
 public class LogInException extends RuntimeException {
     public LogInException(String message) {

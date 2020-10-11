@@ -9,4 +9,6 @@ public interface AuthenticationService {
     void registerUser(String username, String email, String password, String passwordConfirmation, String firstName,
                         String lastName);
 
+    void updatePassword(String oldPassword, String newPassword, String newPasswordConfirmation);
+
 }

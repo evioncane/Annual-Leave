@@ -1,13 +1,14 @@
 package com.example.demo.service.auth;
 
-import com.example.demo.exceptions.LogInException;
-import com.example.demo.exceptions.RegistrationException;
+import com.example.demo.exceptions.auth.LogInException;
+import com.example.demo.exceptions.auth.PasswordUpdateException;
+import com.example.demo.exceptions.auth.RegistrationException;
 import com.example.demo.model.RoleEntity;
 import com.example.demo.model.UserEntity;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
-import com.example.demo.security.services.UserDetailsImpl;
+import com.example.demo.security.services.user.UserDetailsImpl;
 import com.example.demo.service.dto.JwtLogInDetails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +27,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.demo.util.Constants.EMAIL_IN_USE;
+import static com.example.demo.util.Constants.OLD_PASSWORDS_DO_NOT_MATCH;
 import static com.example.demo.util.Constants.PASSWORDS_DO_NOT_MATCH;
 import static com.example.demo.util.Constants.USERNAME_TAKEN;
 import static com.example.demo.util.Constants.WRONG_CREDENTIALS;
+import static java.lang.String.format;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -94,5 +98,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // Create new user's account
         UserEntity user = new UserEntity(username, email, this.encoder.encode(password), firstName, lastName, Set.of(userRole));
         this.userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(String oldPassword, String newPassword, String newPasswordConfirmation) {
+        if (!newPassword.equals(newPasswordConfirmation)) {
+            throw new PasswordUpdateException(PASSWORDS_DO_NOT_MATCH);
+        }
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity = this.userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", userDetails.getId())));
+        if (!this.encoder.matches(oldPassword, userEntity.getPassword())) {
+            throw new PasswordUpdateException(OLD_PASSWORDS_DO_NOT_MATCH);
+        }
+        String encodedNewPassword = this.encoder.encode(newPassword);
+        userEntity.setPassword(encodedNewPassword);
+        this.userRepository.save(userEntity);
     }
 }

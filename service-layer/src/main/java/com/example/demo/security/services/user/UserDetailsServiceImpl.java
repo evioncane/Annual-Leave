@@ -1,4 +1,4 @@
-package com.example.demo.security.services;
+package com.example.demo.security.services.user;
 
 import com.example.demo.model.UserEntity;
 import com.example.demo.repository.UserRepository;
@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) {
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", username)));
         return UserDetailsImpl.build(user);
     }

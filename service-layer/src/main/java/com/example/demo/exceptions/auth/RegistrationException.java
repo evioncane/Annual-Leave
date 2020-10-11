@@ -1,4 +1,4 @@
-package com.example.demo.exceptions;
+package com.example.demo.exceptions.auth;
 
 public class RegistrationException extends RuntimeException {
     public RegistrationException(String message) {
