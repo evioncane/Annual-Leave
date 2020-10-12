@@ -6,6 +6,8 @@ import com.example.demo.payloads.auth.UpdatePasswordRequest;
 import com.example.demo.service.dto.JwtLogInDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestHelper {
 
     protected String baseAuthUrl;
