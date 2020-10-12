@@ -7,14 +7,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SignUpResponse {
+public class CreateUserResponse {
 
     private String username;
     private String email;
     private String firstName;
     private String lastName;
 
-    public SignUpResponse(SignupRequest request) {
+    public CreateUserResponse(CreateUserRequest request) {
         this.username = request.getUsername();
         this.email = request.getEmail();
         this.firstName = request.getFirstName();

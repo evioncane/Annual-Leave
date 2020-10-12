@@ -2,6 +2,7 @@ package com.example.demo.service.auth;
 
 import com.example.demo.exceptions.auth.PasswordUpdateException;
 import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserHistoryRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
 import org.junit.Test;
@@ -19,6 +20,9 @@ public class UpdatePasswordTest {
     private UserRepository userRepository;
 
     @Mock
+    private UserHistoryRepository userHistoryRepository;
+
+    @Mock
     private PasswordEncoder encoder;
 
     @Mock
@@ -32,7 +36,7 @@ public class UpdatePasswordTest {
 
     @InjectMocks
     private AuthenticationService authenticationService = new AuthenticationServiceImpl(authenticationManager,
-            userRepository, roleRepository, encoder, jwtUtils);
+            userRepository, userHistoryRepository, roleRepository, encoder, jwtUtils);
 
     @Test(expected= PasswordUpdateException.class)
     public void updatePasswordWhenNotAuthenticated() {

@@ -17,6 +17,4 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Boolean existsByEmail(String email);
 
-    /*@Query(value = "delete from user_roles where users_id= :user_id", nativeQuery = true)
-    void deleteRelation(@Param("user_id") int user_id);*/
 }

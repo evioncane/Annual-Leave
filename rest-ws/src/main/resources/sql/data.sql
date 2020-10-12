@@ -1,7 +1,7 @@
-INSERT INTO `role` (`name`) VALUES ('admin');
-INSERT INTO `role` (`name`) VALUES ('user');
-INSERT INTO `role` (`name`) VALUES ('supervisor');
-INSERT INTO `role` (`name`) VALUES ('finance');
+INSERT INTO `role` (`name`) VALUES ('ROLE_ADMIN');
+INSERT INTO `role` (`name`) VALUES ('ROLE_USER');
+INSERT INTO `role` (`name`) VALUES ('ROLE_SUPERVISOR');
+INSERT INTO `role` (`name`) VALUES ('ROLE_FINANCE');
 
 INSERT INTO `user` (`email`, `first_name`, `last_name`, `password`, `username`) VALUES ('admin@admin.io', 'Admin', 'Admin', '$2a$10$ixr.yMuYGoOSjaVAjDiINeGQP9fukWYcmW9qfdoaO410Ief.I76oG', 'admin');
 INSERT INTO `user_roles` (`users_id`, `roles_id`) VALUES ('1', '1');

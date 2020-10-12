@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -48,7 +48,7 @@ public class UserEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
-    @ManyToMany(targetEntity = RoleEntity.class,cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = RoleEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<RoleEntity> roles;
 
     public UserEntity(String username, String email, String password, String firstName, String lastName, Date startDate, Set<RoleEntity> roles) {
@@ -59,5 +59,19 @@ public class UserEntity {
         this.lastName = lastName;
         this.startDate = startDate;
         this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return id == that.id &&
+                Objects.equals(username, that.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 }

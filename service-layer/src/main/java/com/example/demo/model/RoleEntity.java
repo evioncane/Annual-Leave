@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ROLE")
@@ -28,10 +29,20 @@ public class RoleEntity {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(targetEntity = UserEntity.class, mappedBy = "roles", cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = UserEntity.class, mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<UserEntity> users;
 
-    public RoleEntity(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RoleEntity that = (RoleEntity) o;
+        return id == that.id &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

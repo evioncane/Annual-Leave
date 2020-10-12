@@ -1,11 +1,15 @@
 package com.example.demo.service.auth;
 
+import com.example.demo.exceptions.auth.DeleteException;
 import com.example.demo.exceptions.auth.LogInException;
 import com.example.demo.exceptions.auth.PasswordUpdateException;
 import com.example.demo.exceptions.auth.RegistrationException;
+import com.example.demo.exceptions.auth.UpdateException;
 import com.example.demo.model.RoleEntity;
 import com.example.demo.model.UserEntity;
+import com.example.demo.model.UserHistoryEntity;
 import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserHistoryRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.security.services.user.UserDetailsImpl;
@@ -21,15 +25,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.example.demo.util.Constants.DEFAULT_PASSWORD;
 import static com.example.demo.util.Constants.EMAIL_IN_USE;
+import static com.example.demo.util.Constants.NO_VALID_ROLES_FOUND;
 import static com.example.demo.util.Constants.OLD_PASSWORDS_DO_NOT_MATCH;
 import static com.example.demo.util.Constants.PASSWORDS_DO_NOT_MATCH;
+import static com.example.demo.util.Constants.USERNAME_NOT_FOUND;
 import static com.example.demo.util.Constants.USERNAME_TAKEN;
 import static com.example.demo.util.Constants.WRONG_CREDENTIALS;
 import static java.lang.String.format;
@@ -43,6 +51,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
 
+    private final UserHistoryRepository userHistoryRepository;
+
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder encoder;
@@ -50,9 +60,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtUtils jwtUtils;
 
     public AuthenticationServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository,
-                                     RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+                                     UserHistoryRepository userHistoryRepository, RoleRepository roleRepository,
+                                     PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.userHistoryRepository = userHistoryRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
@@ -80,11 +92,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void registerUser(String username, String email, String password, String passwordConfirmation,
-                               String firstName, String lastName, Date registrationDate) {
-        if (!password.equals(passwordConfirmation)) {
-            throw new RegistrationException(PASSWORDS_DO_NOT_MATCH);
-        }
+    public void registerUser(String username, String email, String firstName, String lastName, Date registrationDate,
+                             Set<String> roles) {
         if (this.userRepository.existsByUsername(username)) {
             throw new RegistrationException(USERNAME_TAKEN);
         }
@@ -92,17 +101,53 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RegistrationException(EMAIL_IN_USE);
         }
 
-        Optional<RoleEntity> roleOptional = this.roleRepository.findByName("user");
-        RoleEntity userRole;
-        userRole = roleOptional.orElseGet(() -> new RoleEntity("user"));
+        Set<RoleEntity> roleEntitySet = this.roleRepository.findByNameIn(roles);
+        if (roleEntitySet.isEmpty()) {
+            throw new RegistrationException(NO_VALID_ROLES_FOUND);
+        }
 
         // If date is empty then a new date (for now) is created
         registrationDate = registrationDate != null ? registrationDate : new Date();
 
         // Create new user's account
-        UserEntity user = new UserEntity(username, email, this.encoder.encode(password), firstName, lastName,
-                registrationDate, Set.of(userRole));
+        UserEntity user = new UserEntity(username, email, this.encoder.encode(DEFAULT_PASSWORD), firstName, lastName,
+                registrationDate, roleEntitySet);
         this.userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(String username, String email, String firstName, String lastName, Date registrationDate,
+                           Set<String> roles) {
+        UserEntity userEntity = this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", username)));
+        if (email != null) {
+            userEntity.setEmail(email);
+        }
+        if (firstName != null) {
+            userEntity.setFirstName(firstName);
+        }
+        if (lastName != null) {
+            userEntity.setLastName(lastName);
+        }
+        if (registrationDate != null) {
+            userEntity.setStartDate(registrationDate);
+        }
+        if (roles != null && !roles.isEmpty()) {
+            Set<RoleEntity> roleEntitySet = this.roleRepository.findByNameIn(roles);
+            userEntity.setRoles(roleEntitySet);
+        }
+        this.userRepository.save(userEntity);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String username) {
+        UserEntity userEntity= this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", username)));
+        this.userRepository.delete(userEntity);
+        UserHistoryEntity userHistoryEntity = new UserHistoryEntity(new Date(), userEntity);
+        this.userHistoryRepository.save(userHistoryEntity);
     }
 
     @Override

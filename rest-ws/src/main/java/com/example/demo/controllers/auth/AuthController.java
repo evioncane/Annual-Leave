@@ -1,12 +1,14 @@
 package com.example.demo.controllers.auth;
 
+import com.example.demo.exceptions.auth.DeleteException;
 import com.example.demo.exceptions.auth.LogInException;
 import com.example.demo.exceptions.auth.PasswordUpdateException;
 import com.example.demo.exceptions.auth.RegistrationException;
 import com.example.demo.payloads.auth.LoginRequest;
-import com.example.demo.payloads.auth.SignUpResponse;
-import com.example.demo.payloads.auth.SignupRequest;
+import com.example.demo.payloads.auth.CreateUserResponse;
+import com.example.demo.payloads.auth.CreateUserRequest;
 import com.example.demo.payloads.auth.UpdatePasswordRequest;
+import com.example.demo.payloads.auth.UpdateUserRequest;
 import com.example.demo.service.auth.AuthenticationService;
 import com.example.demo.service.dto.JwtLogInDetails;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +30,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.demo.util.Constants.PASSWORDS_UPDATED;
+import static com.example.demo.util.Constants.SOMETHING_WENT_WRONG;
+import static com.example.demo.util.Constants.WRONG_UPDATE_REQUEST;
+import static java.lang.String.format;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -49,15 +56,45 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignupRequest signupRequest) {
+    @PostMapping("/create/user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
         try {
-            this.authenticationService.registerUser(signupRequest.getUsername(), signupRequest.getEmail(),
-                    signupRequest.getPassword(), signupRequest.getPasswordConfirmation(), signupRequest.getFirstName(),
-                    signupRequest.getLastName(), signupRequest.getRegisteredDate());
-            return ResponseEntity.ok(new SignUpResponse(signupRequest));
+            this.authenticationService.registerUser(createUserRequest.getUsername(), createUserRequest.getEmail(),
+                    createUserRequest.getFirstName(), createUserRequest.getLastName(),
+                    createUserRequest.getRegisteredDate(), createUserRequest.getRoles());
+            return ResponseEntity.ok(new CreateUserResponse(createUserRequest));
         } catch (RegistrationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/update/user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+        try {
+            if (updateUserRequest.allOtherFieldsAreEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(WRONG_UPDATE_REQUEST);
+            }
+            this.authenticationService.updateUser(updateUserRequest.getUsername(), updateUserRequest.getEmail(),
+                    updateUserRequest.getFirstName(), updateUserRequest.getLastName(), updateUserRequest.getRegisteredDate(),
+                    updateUserRequest.getRoles());
+            return ResponseEntity.ok(updateUserRequest);
+        } catch (RegistrationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/delete/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        try {
+            this.authenticationService.deleteUser(username);
+            return ResponseEntity.ok(format("User %s deleted successfully", username));
+        } catch (DeleteException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(SOMETHING_WENT_WRONG);
         }
     }
 
@@ -67,7 +104,7 @@ public class AuthController {
         try {
             this.authenticationService.updatePassword(updatePasswordRequest.getOldPassword(),
                     updatePasswordRequest.getNewPassword(), updatePasswordRequest.getNewPasswordConfirmation());
-            return ResponseEntity.ok().body(PASSWORDS_UPDATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(PASSWORDS_UPDATED);
         } catch (PasswordUpdateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
