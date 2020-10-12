@@ -105,14 +105,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!newPassword.equals(newPasswordConfirmation)) {
             throw new PasswordUpdateException(PASSWORDS_DO_NOT_MATCH);
         }
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity userEntity = this.userRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", userDetails.getId())));
-        if (!this.encoder.matches(oldPassword, userEntity.getPassword())) {
-            throw new PasswordUpdateException(OLD_PASSWORDS_DO_NOT_MATCH);
+        try {
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserEntity userEntity = this.userRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", userDetails.getId())));
+            if (!this.encoder.matches(oldPassword, userEntity.getPassword())) {
+                throw new PasswordUpdateException(OLD_PASSWORDS_DO_NOT_MATCH);
+            }
+            String encodedNewPassword = this.encoder.encode(newPassword);
+            userEntity.setPassword(encodedNewPassword);
+            this.userRepository.save(userEntity);
+        } catch (NullPointerException e) {
+            throw new PasswordUpdateException("User not authenticated!");
         }
-        String encodedNewPassword = this.encoder.encode(newPassword);
-        userEntity.setPassword(encodedNewPassword);
-        this.userRepository.save(userEntity);
     }
 }

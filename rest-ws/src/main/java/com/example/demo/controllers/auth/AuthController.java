@@ -50,7 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignupRequest signupRequest) {
         try {
             this.authenticationService.registerUser(signupRequest.getUsername(), signupRequest.getEmail(),
                     signupRequest.getPassword(), signupRequest.getPasswordConfirmation(), signupRequest.getFirstName(),
