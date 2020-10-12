@@ -1,10 +1,8 @@
 package com.example.demo.service.auth;
 
-import com.example.demo.exceptions.auth.DeleteException;
 import com.example.demo.exceptions.auth.LogInException;
 import com.example.demo.exceptions.auth.PasswordUpdateException;
 import com.example.demo.exceptions.auth.RegistrationException;
-import com.example.demo.exceptions.auth.UpdateException;
 import com.example.demo.model.RoleEntity;
 import com.example.demo.model.UserEntity;
 import com.example.demo.model.UserHistoryEntity;
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +34,6 @@ import static com.example.demo.util.Constants.EMAIL_IN_USE;
 import static com.example.demo.util.Constants.NO_VALID_ROLES_FOUND;
 import static com.example.demo.util.Constants.OLD_PASSWORDS_DO_NOT_MATCH;
 import static com.example.demo.util.Constants.PASSWORDS_DO_NOT_MATCH;
-import static com.example.demo.util.Constants.USERNAME_NOT_FOUND;
 import static com.example.demo.util.Constants.USERNAME_TAKEN;
 import static com.example.demo.util.Constants.WRONG_CREDENTIALS;
 import static java.lang.String.format;

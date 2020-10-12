@@ -35,7 +35,7 @@ public class UpdatePasswordTest {
     private JwtUtils jwtUtils;
 
     @InjectMocks
-    private AuthenticationService authenticationService = new AuthenticationServiceImpl(authenticationManager,
+    private final AuthenticationService authenticationService = new AuthenticationServiceImpl(authenticationManager,
             userRepository, userHistoryRepository, roleRepository, encoder, jwtUtils);
 
     @Test(expected= PasswordUpdateException.class)
