@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void registerUser(String username, String email, String password, String passwordConfirmation,
-                               String firstName, String lastName) {
+                               String firstName, String lastName, Date registrationDate) {
         if (!password.equals(passwordConfirmation)) {
             throw new RegistrationException(PASSWORDS_DO_NOT_MATCH);
         }
@@ -95,8 +96,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RoleEntity userRole;
         userRole = roleOptional.orElseGet(() -> new RoleEntity("user"));
 
+        // If date is empty then a new date (for now) is created
+        registrationDate = registrationDate != null ? registrationDate : new Date();
+
         // Create new user's account
-        UserEntity user = new UserEntity(username, email, this.encoder.encode(password), firstName, lastName, Set.of(userRole));
+        UserEntity user = new UserEntity(username, email, this.encoder.encode(password), firstName, lastName,
+                registrationDate, Set.of(userRole));
         this.userRepository.save(user);
     }
 

@@ -54,7 +54,7 @@ public class AuthController {
         try {
             this.authenticationService.registerUser(signupRequest.getUsername(), signupRequest.getEmail(),
                     signupRequest.getPassword(), signupRequest.getPasswordConfirmation(), signupRequest.getFirstName(),
-                    signupRequest.getLastName());
+                    signupRequest.getLastName(), signupRequest.getRegisteredDate());
             return ResponseEntity.ok(new SignUpResponse(signupRequest));
         } catch (RegistrationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

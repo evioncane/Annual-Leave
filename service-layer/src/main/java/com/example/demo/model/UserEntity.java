@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -40,15 +44,20 @@ public class UserEntity {
     @Column
     private String lastName;
 
+    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startDate;
+
     @ManyToMany(targetEntity = RoleEntity.class,cascade = CascadeType.ALL)
     private Set<RoleEntity> roles;
 
-    public UserEntity(String username, String email, String password, String firstName, String lastName, Set<RoleEntity> roles) {
+    public UserEntity(String username, String email, String password, String firstName, String lastName, Date startDate, Set<RoleEntity> roles) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.startDate = startDate;
         this.roles = roles;
     }
 }
