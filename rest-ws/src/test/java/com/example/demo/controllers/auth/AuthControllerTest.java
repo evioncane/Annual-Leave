@@ -44,13 +44,13 @@ public class AuthControllerTest extends TestHelper {
 
     @BeforeEach
     public void setUp() {
-        this.baseAuthUrl = "http://localhost:" + randomServerPort+"/auth";
+        this.restTemplate = new RestTemplate();
+        this.baseAuthUrl = "http://localhost:" + randomServerPort +"/auth";
         this.logInUrl = this.baseAuthUrl + "/signin";
         this.createUserUrl = this.baseAuthUrl + "/create/user";
         this.updateUserUrl = this.baseAuthUrl + "/update/user";
         this.deleteUserUrl = this.baseAuthUrl + "/delete";
         this.updatePasswordUrl = this.baseAuthUrl + "/update/password";
-        this.restTemplate = new RestTemplate();
         Optional<UserEntity> optionalUserEntity = this.userRepository.findByUsername("user");
         UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new UsernameNotFoundException("User: user not found!"));
         userEntity.setPassword(this.encoder.encode("test"));

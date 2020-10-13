@@ -9,6 +9,8 @@ public interface AuthenticationService {
 
     JwtLogInDetails authenticateUser(String username, String password);
 
+    void logOut();
+
     void registerUser(String username, String email, String firstName,
                       String lastName, Date registrationDate, Set<String> roles);
 

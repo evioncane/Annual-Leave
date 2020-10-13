@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,6 +86,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.error("User({}) tried to log in but failed!", username);
             throw new LogInException(WRONG_CREDENTIALS);
         }
+    }
+
+    @Override
+    public void logOut() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(null);
     }
 
     @Override

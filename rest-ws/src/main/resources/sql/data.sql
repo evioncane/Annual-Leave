@@ -14,3 +14,9 @@ INSERT INTO `user_roles` (`users_id`, `roles_id`) VALUES ('3', '3');
 
 INSERT INTO `user` (`email`, `first_name`, `last_name`, `password`, `username`) VALUES ('finance@finance.io', 'Finance', 'Finance', '$2a$10$8gyrExC9KjySo/VWMYN98ufqSUShGiQcVVcfc65NqXmsSqq9QxYtO', 'finance');
 INSERT INTO `user_roles` (`users_id`, `roles_id`) VALUES ('4', '4');
+
+INSERT INTO `application` (`date`, `days`, `status`, `type`, `user_id`) VALUES ('2020-10-13 07:43:44', '10', '2', '0', '2');
+INSERT INTO `application` (`date`, `days`, `status`, `type`, `user_id`) VALUES ('2020-10-13 07:43:44', '9', '1', '1', '2');
+INSERT INTO `application` (`date`, `days`, `status`, `type`, `user_id`) VALUES ('2020-10-13 07:43:44', '8', '0', '0', '2');
+INSERT INTO `application` (`date`, `days`, `message`, `status`, `type`, `user_id`) VALUES ('2020-10-13 07:43:44', '7', 'Just no!', '1', '1', '2');
+INSERT INTO `application` (`date`, `days`, `status`, `type`, `user_id`) VALUES ('2020-10-13 07:43:44', '6', '2', '0', '2');

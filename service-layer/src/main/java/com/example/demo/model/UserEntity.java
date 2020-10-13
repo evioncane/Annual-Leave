@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,7 +52,11 @@ public class UserEntity {
     @ManyToMany(targetEntity = RoleEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<RoleEntity> roles;
 
-    public UserEntity(String username, String email, String password, String firstName, String lastName, Date startDate, Set<RoleEntity> roles) {
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<ApplicationEntity> applicationEntitySet;
+
+    public UserEntity(String username, String email, String password, String firstName, String lastName, Date startDate,
+                      Set<RoleEntity> roles) {
         this.username = username;
         this.email = email;
         this.password = password;

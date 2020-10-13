@@ -29,6 +29,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.demo.util.Constants.LOG_OUT_MESSAGE;
 import static com.example.demo.util.Constants.PASSWORDS_UPDATED;
 import static com.example.demo.util.Constants.SOMETHING_WENT_WRONG;
 import static com.example.demo.util.Constants.WRONG_UPDATE_REQUEST;
@@ -55,6 +56,14 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+
+    @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> logoutUser() {
+        this.authenticationService.logOut();
+        return ResponseEntity.ok(LOG_OUT_MESSAGE);
+    }
+
 
     @PostMapping("/create/user")
     @PreAuthorize("hasRole('ADMIN')")

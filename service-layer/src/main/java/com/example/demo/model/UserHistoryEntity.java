@@ -42,6 +42,7 @@ public class UserHistoryEntity {
     private Date removedDate;
 
     public UserHistoryEntity(Date removedDate, UserEntity userEntity) {
+        this.id = userEntity.getId();
         this.username = userEntity.getUsername();
         this.email = userEntity.getEmail();
         this.firstName = userEntity.getFirstName();
