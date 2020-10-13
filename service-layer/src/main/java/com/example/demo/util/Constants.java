@@ -14,5 +14,9 @@ public class Constants {
     WRONG_UPDATE_REQUEST = "At least one other field should be entered to update user",
     EMPTY_MESSAGE_ON_REJECTION = "Message cannot be empty when application is rejected!",
     APPLICATION_EVALUATED_MESSAGE = "Application evaluated successfully!",
+    APPLICATION_CREATED_MESSAGE = "Application created successfully!",
+    APPLICATION_UPDATED_MESSAGE = "Application evaluated successfully!",
+    APPLICATION_DELETED_MESSAGE = "Application deleted successfully!",
+    APPLICATION_DELETED_FAILED_MESSAGE = "Application failed to be deleted!",
     SOMETHING_WENT_WRONG = "Something went wrong!";
 }

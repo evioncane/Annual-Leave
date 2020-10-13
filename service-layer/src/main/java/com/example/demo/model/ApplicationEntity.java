@@ -52,6 +52,17 @@ public class ApplicationEntity {
     @JoinColumn(name="USER_ID")
     private UserEntity user;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleted;
+
+    public ApplicationEntity(ApplicationType type, int days, Status status, Date date, UserEntity user) {
+        this.type = type;
+        this.days = days;
+        this.status = status;
+        this.date = date;
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
