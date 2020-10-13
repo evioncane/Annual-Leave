@@ -13,6 +13,7 @@ public class Constants {
     NO_VALID_ROLES_FOUND = "No valid roles found",
     WRONG_UPDATE_REQUEST = "At least one other field should be entered to update user",
     EMPTY_MESSAGE_ON_REJECTION = "Message cannot be empty when application is rejected!",
+    REGISTRATION_DAYS_EVALUATION_MESSAGE = "Not enough days have passed since registration to apply!",
     APPLICATION_EVALUATED_MESSAGE = "Application evaluated successfully!",
     APPLICATION_CREATED_MESSAGE = "Application created successfully!",
     APPLICATION_UPDATED_MESSAGE = "Application evaluated successfully!",

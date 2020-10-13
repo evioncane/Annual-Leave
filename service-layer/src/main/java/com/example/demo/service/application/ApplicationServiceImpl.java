@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.example.demo.util.Constants.APPLICATION_DELETED_FAILED_MESSAGE;
 import static com.example.demo.util.Constants.EMPTY_MESSAGE_ON_REJECTION;
+import static com.example.demo.util.Constants.REGISTRATION_DAYS_EVALUATION_MESSAGE;
 import static java.lang.String.format;
 
 /**
@@ -27,6 +28,8 @@ import static java.lang.String.format;
  */
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
+
+    private static final int MIN_NUMBER_OF_DAYS = 90;
 
     private final ApplicationRepository applicationRepository;
 
@@ -106,9 +109,23 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void createUserApplication(ApplicationType type, int days) {
         UserEntity userEntity = getUserEntity();
+        if (!canUserApply(userEntity.getStartDate())) {
+            throw new ApplicationException(REGISTRATION_DAYS_EVALUATION_MESSAGE);
+        }
         ApplicationEntity applicationEntity = new ApplicationEntity(type, days, Status.PENDING, new Date(), userEntity);
         this.applicationRepository.save(applicationEntity);
         // TODO: send email
+    }
+
+    /**
+     * Checks if enough days have passed for user to apply
+     * @param registrationDate date the current user is registerd
+     * @return true if enough days have passed, else false
+     */
+    private boolean canUserApply(Date registrationDate) {
+        int diffInDays = (int)( ((new Date()).getTime() - registrationDate.getTime())
+                / (1000 * 60 * 60 * 24) );
+        return diffInDays >= MIN_NUMBER_OF_DAYS;
     }
 
     /**
