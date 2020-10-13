@@ -39,6 +39,9 @@ import static com.example.demo.util.Constants.USERNAME_TAKEN;
 import static com.example.demo.util.Constants.WRONG_CREDENTIALS;
 import static java.lang.String.format;
 
+/**
+ * Contains all authentication and user CRUD logic
+ */
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -67,6 +70,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.jwtUtils = jwtUtils;
     }
 
+    /**
+     * The log in method that requires a username and a password.
+     *
+     * @param username unique username of user
+     * @param password secret key
+     * @return Details needed to log in
+     */
     @Override
     public JwtLogInDetails authenticateUser(String username, String password) {
         try {
@@ -88,12 +98,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    /**
+     * Log out logic
+     */
     @Override
     public void logOut() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(null);
     }
 
+    /**
+     * Creates a user with parameters below
+     * @param username unique username of user
+     * @param email unique email of user
+     * @param firstName users first name
+     * @param lastName users last name
+     * @param registrationDate users registration date
+     * @param roles set of roles user has
+     */
     @Override
     public void registerUser(String username, String email, String firstName, String lastName, Date registrationDate,
                              Set<String> roles) {
@@ -118,6 +140,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userRepository.save(user);
     }
 
+    /**
+     * Updates a user with parameters below. If parameters are null they are ignored
+     * @param username unique username of user
+     * @param email unique email of user
+     * @param firstName users first name
+     * @param lastName users last name
+     * @param registrationDate users registration date
+     * @param roles set of roles user has
+     */
     @Override
     @Transactional
     public void updateUser(String username, String email, String firstName, String lastName, Date registrationDate,
@@ -143,6 +174,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userRepository.save(userEntity);
     }
 
+    /**
+     * Deletes a user using the unique username
+     * @param username unique username of user
+     */
     @Override
     @Transactional
     public void deleteUser(String username) {
@@ -153,6 +188,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userHistoryRepository.save(userHistoryEntity);
     }
 
+    /**
+     * Updates the current user's password. Before that it check for the old password and that new password
+     * matches password confirmation
+     * @param oldPassword old password used by user
+     * @param newPassword password the user wants to change to
+     * @param newPasswordConfirmation confirmation of the new password
+     */
     @Override
     public void updatePassword(String oldPassword, String newPassword, String newPasswordConfirmation) {
         if (!newPassword.equals(newPasswordConfirmation)) {

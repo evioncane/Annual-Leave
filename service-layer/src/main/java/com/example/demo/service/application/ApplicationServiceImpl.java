@@ -22,6 +22,9 @@ import static com.example.demo.util.Constants.APPLICATION_DELETED_FAILED_MESSAGE
 import static com.example.demo.util.Constants.EMPTY_MESSAGE_ON_REJECTION;
 import static java.lang.String.format;
 
+/**
+ * Contains all logic behind application API's
+ */
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
@@ -34,6 +37,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Lists all applications which match the parameters below. If the parameters are null they are ignored.
+     *
+     * @param username unique username
+     * @param type type of application (VACATION, COMPENSATION)
+     * @param status status of application (APPROVED, REJECTED, PENDING)
+     * @param fromDate date to start the search
+     * @param toDate date to finish the search
+     * @return filtered list
+     */
     @Override
     public List<Application> getAll(String username, ApplicationType type, Status status, Date fromDate, Date toDate) {
         return this.applicationRepository.filterAll(type, status, username, fromDate, toDate, false)
@@ -42,6 +55,15 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lists all applications which match the parameters below. If the parameters are null they are ignored.
+     *
+     * @param type type of application (VACATION, COMPENSATION)
+     * @param status status of application (APPROVED, REJECTED, PENDING)
+     * @param fromDate date to start the search
+     * @param toDate date to finish the search
+     * @return filtered list
+     */
     @Override
     public List<Application> getAll(ApplicationType type, Status status, Date fromDate, Date toDate) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -51,6 +73,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Used by the supervisor to evaluate users applications
+     *
+     * @param id unique identification of application
+     * @param status status of application (APPROVED, REJECTED, PENDING)
+     * @param message message supervisor left for user
+     */
     @Override
     public void evaluate(long id, Status status, String message) {
         boolean messageCheck = message == null || message.isEmpty();
@@ -67,6 +96,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         // TODO: send email
     }
 
+    /**
+     * Creates an application for the logged user. Parameters are required.
+     *
+     * @param type type of application (VACATION, COMPENSATION)
+     * @param days number of days user is applying for
+     */
     @Override
     @Transactional
     public void createUserApplication(ApplicationType type, int days) {
@@ -76,6 +111,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         // TODO: send email
     }
 
+    /**
+     * Updates an application for the logged user
+     *
+     * @param id unique identification of application
+     * @param type type of application (VACATION, COMPENSATION)
+     * @param days number of days user is applying for
+     */
     @Override
     public void updateUserApplication(long id, ApplicationType type, Integer days) {
         UserEntity userEntity = getUserEntity();
@@ -85,6 +127,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         // TODO: send email
     }
 
+    /**
+     * Deletes an application of the logged user
+     *
+     * @param id unique identification of application
+     */
     @Override
     public void deleteApplication(long id) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

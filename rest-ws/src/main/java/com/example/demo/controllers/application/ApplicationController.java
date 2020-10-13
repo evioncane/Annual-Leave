@@ -33,6 +33,9 @@ import static com.example.demo.util.Constants.APPLICATION_EVALUATED_MESSAGE;
 import static com.example.demo.util.Constants.APPLICATION_UPDATED_MESSAGE;
 import static com.example.demo.util.Constants.SOMETHING_WENT_WRONG;
 
+/**
+ * Controller for all application API's
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("application")
