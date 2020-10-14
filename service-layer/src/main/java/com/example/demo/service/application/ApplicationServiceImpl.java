@@ -9,6 +9,8 @@ import com.example.demo.repository.ApplicationRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.services.user.UserDetailsImpl;
 import com.example.demo.service.dto.Application;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.demo.util.Constants.APPLICATION_DELETED_FAILED_MESSAGE;
+import static com.example.demo.util.Constants.APPLICATION_NOT_FOUND_MESSAGE;
 import static com.example.demo.util.Constants.EMPTY_MESSAGE_ON_REJECTION;
 import static com.example.demo.util.Constants.REGISTRATION_DAYS_EVALUATION_MESSAGE;
 import static java.lang.String.format;
@@ -28,6 +31,8 @@ import static java.lang.String.format;
  */
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
+
+    private static final Logger logger = LogManager.getLogger(ApplicationServiceImpl.class);
 
     private static final int MIN_NUMBER_OF_DAYS = 90;
 
@@ -137,9 +142,13 @@ public class ApplicationServiceImpl implements ApplicationService {
      */
     @Override
     public void updateUserApplication(long id, ApplicationType type, Integer days) {
-        UserEntity userEntity = getUserEntity();
-        ApplicationEntity applicationEntity = this.applicationRepository.findByIdAndDeletedAndUser(id, false, userEntity)
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ApplicationEntity applicationEntity = this.applicationRepository
+                .findByIdAndDeletedAndUser(id, false, userDetails.getUsername())
                 .orElseThrow(() -> new ApplicationException(id));
+        if (applicationEntity.getStatus() != Status.PENDING) {
+            throw new ApplicationException("Cannot change the status of evaluated application!");
+        }
         this.applicationRepository.save(applicationEntity);
         // TODO: send email
     }
@@ -152,8 +161,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void deleteApplication(long id) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        long deletionSize = this.applicationRepository.deleteById(id, false, userDetails.getUsername());
-        if (deletionSize <= 0) {
+        ApplicationEntity applicationEntity = this.applicationRepository
+                .findByIdAndDeletedAndUser(id, false, userDetails.getUsername())
+                .orElseThrow(() -> new ApplicationException(APPLICATION_NOT_FOUND_MESSAGE));
+        try {
+            applicationEntity.setDeleted(true);
+            this.applicationRepository.save(applicationEntity);
+        } catch (Exception e) {
+            logger.error("Something went wrong with deletion of application with id {}. /n{}", id, e);
             throw new ApplicationException(APPLICATION_DELETED_FAILED_MESSAGE);
         }
         // TODO: send email

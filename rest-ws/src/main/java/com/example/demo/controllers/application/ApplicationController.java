@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.demo.util.Constants.APPLICATION_CREATED_MESSAGE;
-import static com.example.demo.util.Constants.APPLICATION_DELETED_FAILED_MESSAGE;
 import static com.example.demo.util.Constants.APPLICATION_DELETED_MESSAGE;
 import static com.example.demo.util.Constants.APPLICATION_EVALUATED_MESSAGE;
 import static com.example.demo.util.Constants.APPLICATION_UPDATED_MESSAGE;
@@ -103,14 +102,14 @@ public class ApplicationController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/personal/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteApplication(@NotNull @PathVariable Long id){
         try {
             this.applicationService.deleteApplication(id);
             return ResponseEntity.ok(APPLICATION_DELETED_MESSAGE);
         } catch (ApplicationException e) {
-            return ResponseEntity.ok(APPLICATION_DELETED_FAILED_MESSAGE);
+            return ResponseEntity.ok(e.getMessage());
         }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(SOMETHING_WENT_WRONG);

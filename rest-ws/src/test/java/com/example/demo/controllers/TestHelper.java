@@ -68,7 +68,7 @@ public class TestHelper {
         updatePasswordRequest.setNewPasswordConfirmation(newPasswordConfirmation);
 
         HttpEntity<UpdatePasswordRequest> request = new HttpEntity<>(updatePasswordRequest, headers);
-        ResponseEntity<String> response = this.restTemplate.postForEntity(uri, request, String.class);
+        ResponseEntity<String> response = this.restTemplate.exchange(uri, HttpMethod.PUT, request, String.class);
         return response.getBody();
 
     }
@@ -111,7 +111,7 @@ public class TestHelper {
         headers.add("Authorization", "Bearer "+token);
 
         HttpEntity<UpdateUserRequest> request = new HttpEntity<>(userRequest, headers);
-        ResponseEntity<String> response = this.restTemplate.postForEntity(uri, request, String.class);
+        ResponseEntity<String> response = this.restTemplate.exchange(uri, HttpMethod.PUT, request, String.class);
         return response.getStatusCodeValue();
     }
 
