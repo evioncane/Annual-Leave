@@ -69,7 +69,7 @@ public class ApplicationController {
         }
     }
 
-    @GetMapping("/personal")
+    @GetMapping("/personal/all")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getPersonalApplications(@RequestParam(required = false) ApplicationType type,
                                                      @RequestParam(required = false) Status status,
