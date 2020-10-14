@@ -1,0 +1,29 @@
+<div class="col-md-6 post-container">
+  <h2 style="margin: auto; color: midnightblue;"> Application Details</h2>
+  <button class="btn apply-button" style="width:auto" (click)="addApplication()">Apply for Vacation or Compensation</button>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th class="hidden">Id</th>
+      <th>Type</th>
+      <th>Days</th>
+      <th>Status</th>
+      <th>Message</th>
+      <th>Date</th>
+      <th>Delete/Modify</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let application of applications">
+      <td class="hidden">{{application.id}}</td>
+      <td>{{application.type}}</td>
+      <td>{{application.days}}</td>
+      <td>{{application.status}}</td>
+      <td>{{application.message}}</td>
+      <td>{{application.date | date:'medium'}}</td>
+      <td><button [hidden]="application.status != 'PENDING'" class="btn btn-danger" (click)="deleteApplication(application)">Delete</button>
+        <button  [hidden]="application.status != 'PENDING'" class="btn apply-button" (click)="editApplication(application)" style="margin-left: 20px;">Modify</button></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

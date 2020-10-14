@@ -1,0 +1,16 @@
+<div class="col-md-6 user-container">
+  <h2 class="text-center">Edit Application</h2>
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="title">Type:</label>
+      <input type="text" formControlName="type" placeholder="type" name="type" class="form-control" id="type">
+    </div>
+
+    <div class="form-group">
+      <label for="text">Days:</label>
+      <input formControlName="days" placeholder="Text" name="days" class="form-control" id="days">
+    </div>
+
+    <button class="btn btn-success">Update</button>
+  </form>
+</div>

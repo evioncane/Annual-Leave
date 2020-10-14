@@ -1,0 +1,10 @@
+.post-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+  }
+
+  .apply-button {
+    background-color: midnightblue;
+    color: powderblue;
+  }
