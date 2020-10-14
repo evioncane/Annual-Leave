@@ -103,7 +103,7 @@ public class ApplicationController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteApplication(@NotNull @PathVariable Long id){
         try {
