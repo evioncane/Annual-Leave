@@ -79,7 +79,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationList);
     }
 
-    @PutMapping("/personal")
+    @PostMapping("/personal")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createApplication(@RequestParam ApplicationType type, @RequestParam int days) {
         try {
@@ -90,7 +90,7 @@ public class ApplicationController {
         }
     }
 
-    @PostMapping("/personal")
+    @PutMapping("/personal")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateApplication(@RequestParam long id,
                                                @RequestParam(required = false) ApplicationType type,
