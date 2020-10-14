@@ -28,8 +28,6 @@ nbdist/
 ### Example user template
 
 # IntelliJ project files
-.idea
-*.iml
 out
 gen### Java template
 *.class
@@ -46,7 +44,6 @@ gen### Java template
 hs_err_pid*
 ### Gradle template
 .gradle
-build/
 
 upload-dir/
 
@@ -57,9 +54,6 @@ gradle-app.setting
 !gradle-wrapper.jar
 **.DS_Store
 /target/
-*.iml
-*.ipr
-*.iws
 tripleo/root
 classes
 tmp
@@ -81,3 +75,6 @@ arc/data
 data
 arc/ignite
 /ignite/
+/front-end/src/main/web/node/
+/front-end/src/main/web/node_modules/
+/front-end/src/main/web/e2e/
