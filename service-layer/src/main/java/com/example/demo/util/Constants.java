@@ -20,5 +20,9 @@ public class Constants {
     APPLICATION_DELETED_MESSAGE = "Application deleted successfully!",
     APPLICATION_DELETED_FAILED_MESSAGE = "Application failed to be deleted!",
     APPLICATION_NOT_FOUND_MESSAGE = "Application was not found!",
+    APPLICATION_EVALUATED = "Your application has been evaluated!",
+    APPLICATION_WAIT_EVALUATED = "There is an application waiting for evaluation!",
+    APPLICATION_WAIT_TEXT_EVALUATED = "Please check your applications to evaluate!",
+    APPLICATION_TEXT_EVALUATED = "You can review your evaluated application!",
     SOMETHING_WENT_WRONG = "Something went wrong!";
 }

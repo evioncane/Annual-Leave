@@ -6,9 +6,11 @@ import com.example.demo.model.ApplicationType;
 import com.example.demo.model.Status;
 import com.example.demo.model.UserEntity;
 import com.example.demo.repository.ApplicationRepository;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.services.user.UserDetailsImpl;
 import com.example.demo.service.dto.Application;
+import com.example.demo.service.email.EmailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,12 +18,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.demo.util.Constants.APPLICATION_DELETED_FAILED_MESSAGE;
+import static com.example.demo.util.Constants.APPLICATION_EVALUATED;
 import static com.example.demo.util.Constants.APPLICATION_NOT_FOUND_MESSAGE;
+import static com.example.demo.util.Constants.APPLICATION_TEXT_EVALUATED;
+import static com.example.demo.util.Constants.APPLICATION_WAIT_EVALUATED;
+import static com.example.demo.util.Constants.APPLICATION_WAIT_TEXT_EVALUATED;
 import static com.example.demo.util.Constants.EMPTY_MESSAGE_ON_REJECTION;
 import static com.example.demo.util.Constants.REGISTRATION_DAYS_EVALUATION_MESSAGE;
 import static java.lang.String.format;
@@ -40,9 +47,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private final UserRepository userRepository;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository, UserRepository userRepository) {
+    private final RoleRepository roleRepository;
+
+    private final EmailService emailService;
+
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository, UserRepository userRepository,
+                                  RoleRepository roleRepository, EmailService emailService) {
         this.applicationRepository = applicationRepository;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.emailService = emailService;
     }
 
     /**
@@ -101,7 +115,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             entity.setMessage(message);
         }
         this.applicationRepository.save(entity);
-        // TODO: send email
+        sendNotificationEmail(APPLICATION_EVALUATED, APPLICATION_TEXT_EVALUATED, entity.getUser().getEmail());
     }
 
     /**
@@ -119,7 +133,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         ApplicationEntity applicationEntity = new ApplicationEntity(type, days, Status.PENDING, new Date(), userEntity);
         this.applicationRepository.save(applicationEntity);
-        // TODO: send email
+
+        sendNotificationEmail(APPLICATION_WAIT_EVALUATED, APPLICATION_WAIT_TEXT_EVALUATED,
+                this.roleRepository.findEmailsByRole("ROLE_SUPERVISOR")
+                .stream()
+                .map(UserEntity::getEmail).toArray(String[]::new));
     }
 
     /**
@@ -150,7 +168,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new ApplicationException("Cannot change the status of evaluated application!");
         }
         this.applicationRepository.save(applicationEntity);
-        // TODO: send email
     }
 
     /**
@@ -171,12 +188,21 @@ public class ApplicationServiceImpl implements ApplicationService {
             logger.error("Something went wrong with deletion of application with id {}. /n{}", id, e);
             throw new ApplicationException(APPLICATION_DELETED_FAILED_MESSAGE);
         }
-        // TODO: send email
     }
 
     private UserEntity getUserEntity() {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return this.userRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found!", userDetails.getId())));
+    }
+
+    private void sendNotificationEmail(String subject, String text, String... receivers) {
+        try {
+            this.emailService.sendEmail(subject, text, receivers);
+            Arrays.stream(receivers).forEach(receiver -> logger.debug("Email to {} sent successfully!", receiver));
+
+        } catch (Exception e) {
+            logger.debug("Failed to send email to {}!", Arrays.asList(receivers));
+        }
     }
 }
