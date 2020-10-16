@@ -1,0 +1,45 @@
+<div class="col-md-6 user-container">
+  <h2 class="text-center">Add user</h2>
+  <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input formControlName="username" type="text" placeholder="Username" name="username" class="form-control"
+        id="username">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input formControlName="email" type="text" placeholder="Email" name="email" class="form-control" id="email">
+    </div>
+
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input formControlName="firstName" type="text" placeholder="First Name" name="firstName" class="form-control"
+        id="firstName">
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input formControlName="lastName" type="email" placeholder="Last Name" name="lastName" class="form-control"
+        id="lastName">
+    </div>
+
+    <div class="form-group">
+      <label for="exampleFormControlSelect2">Select roles</label>
+      <select formControlName="roles" name="roles" multiple class="form-control" id="exampleFormControlSelect2">
+        <option value="ROLE_ADMIN">ADMIN</option>
+        <option value="ROLE_USER">USER</option>
+        <option value="ROLE_FINANCE">FINANCE</option>
+        <option value="ROLE_SUPERVISOR">SUPERVISOR</option>
+      </select>
+    </div>
+
+    <div class="form-group has-search">
+      <label for="registerdDate">Registered Date:</label>
+      <input type="date" class="form-control" placeholder="Search" formControlName="registeredDate"
+        title="registerdDate">
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+  </form>
+</div>

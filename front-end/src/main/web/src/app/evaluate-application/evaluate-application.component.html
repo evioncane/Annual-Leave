@@ -1,0 +1,13 @@
+<div class="col-md-6 user-container">
+  <h2 class="text-center">Evaluate Application</h2>
+  <form [formGroup]="evaluateForm">
+
+    <div class="form-group">
+      <label for="days">Message:</label>
+      <input formControlName="message" type="text" placeholder="Message" name="message" class="form-control" id="message">
+    </div>
+
+    <button type="submit" class="btn btn-success" (click)="evaluate('APPROVED')">Approve</button>
+    <button type="submit" class="btn btn-danger" (click)="evaluate('REJECTED')">Reject</button>
+  </form>
+</div>
