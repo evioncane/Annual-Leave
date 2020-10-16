@@ -65,4 +65,8 @@ export class HeaderComponent implements OnInit {
   goToUser() {
     this.router.navigate(['list-application']);
   }
+
+  updatePassword() {
+    this.router.navigate(['update-password']);
+  }
 }

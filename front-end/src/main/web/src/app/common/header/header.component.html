@@ -4,6 +4,7 @@
     <button *ngIf="isSupervisor()" (click)="goToSupervisor()" style="margin: 50px;" class="btn navigate-button">Supervisor Tab</button>
     <button *ngIf="isUser()" (click)="goToUser()" class="btn navigate-button">User Tab</button>
     <span class = "filler"></span>
+    <button class="btn" style="margin: 3%;" (click)="updatePassword()">Update Password</button>
     <button class="btn log-out-button" (click)="logout()">Log Out</button>
  </mat-toolbar>
 </div>

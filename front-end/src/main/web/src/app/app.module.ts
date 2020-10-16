@@ -19,6 +19,7 @@ import { AdminListUserComponent } from './admin-list-user/admin-list-user.compon
 import {MatIconModule} from '@angular/material/icon';
 import { EvaluateApplicationComponent } from './evaluate-application/evaluate-application.component';
 import { AdminAddUserComponent } from './admin-add-user/admin-add-user.component';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { AdminAddUserComponent } from './admin-add-user/admin-add-user.component
     AdminListUserComponent,
     EvaluateApplicationComponent,
     AdminAddUserComponent,
+    UpdatePasswordComponent,
   ],
   imports: [
     BrowserModule,

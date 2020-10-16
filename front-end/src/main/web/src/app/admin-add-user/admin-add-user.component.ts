@@ -32,7 +32,6 @@ export class AdminAddUserComponent implements OnInit {
 
   onSubmit() {
     var app = this.addForm.value;
-
     var user = new User();
     user.username = app.username;
     user.email = app.email;

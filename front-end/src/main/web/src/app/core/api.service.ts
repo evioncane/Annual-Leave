@@ -52,6 +52,10 @@ export class ApiService {
     return this.http.delete<any>(AUTH_API + '/delete/' + username, {observe: 'response'})
   }
 
+  updatePassword(updateForm) : Observable<any> {
+    return this.http.put<any>(AUTH_API + '/update/password/', updateForm, {observe: 'response'})
+  }
+
   evaluateApplication(id: number, status: string, message: string) : Observable<any> {
     var evaluationReq = new EvaluationRequest(id, status, message);
     return this.http.post<any>(APPLICATION_API + '/evaluate', evaluationReq, {observe: 'response'});

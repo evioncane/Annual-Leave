@@ -6,7 +6,8 @@ import {EditApplicationComponent} from "./edit-application/edit-application.comp
 import { SupervisorListApplicationComponent } from './supervisor-list-application/supervisor-list-application.component';
 import { AdminListUserComponent } from './admin-list-user/admin-list-user.component';
 import { AdminAddUserComponent } from './admin-add-user/admin-add-user.component';
-import { EvaluateApplicationComponent } from './evaluate-application/evaluate-application.component'
+import { EvaluateApplicationComponent } from './evaluate-application/evaluate-application.component';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'admin-list-user', component: AdminListUserComponent },
   { path: 'admin-add-user', component: AdminAddUserComponent },
   { path: 'evaluate-application', component: EvaluateApplicationComponent },
+  { path: 'update-password', component: UpdatePasswordComponent },
   { path : '', component : LoginComponent}
 ];
 
