@@ -2,15 +2,19 @@
   <h2 class="text-center">Apply for Vacation or Compensation</h2>
   <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <label for="title">Type:</label>
-      <input type="text" formControlName="type" placeholder="Type" name="type" class="form-control" id="type">
+      <label for="type">Type:</label>
+      <select type="text" formControlName="type" placeholder="Type" name="type" class="form-control" id="type">
+        <option value="null" disabled>Select type</option>
+        <option value="VACATION">VACATION</option>
+        <option value="COMPENSATION">COMPENSATION</option>
+      </select>
     </div>
 
     <div class="form-group">
-      <label for="text">Days:</label>
-      <input formControlName="text" placeholder="Days" name="days" class="form-control" id="days">
+      <label for="days">Days:</label>
+      <input formControlName="days" type="number" placeholder="Days" name="days" class="form-control" id="days">
     </div>
 
-    <button class="btn btn-success">Create</button>
+    <button type="submit" class="btn btn-success">Create</button>
   </form>
 </div>

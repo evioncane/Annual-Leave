@@ -40,12 +40,12 @@ export class LoginComponent implements OnInit {
         else {
           this.router.navigate(['list-application']);
         }
-      }else {
-        this.invalidLogin = true;
-        debugger;
-        alert(data.body);
       }
-    });
+    },
+    (error)=> {
+      this.invalidLogin = true;
+    }
+      );
   }
 
   ngOnInit() {

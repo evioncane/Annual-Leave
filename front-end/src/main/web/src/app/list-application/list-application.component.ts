@@ -1,7 +1,10 @@
 import { Component, OnInit , Inject} from '@angular/core';
-import {Router} from "@angular/router";
+import { Router} from "@angular/router";
 import {Application} from "../model/application.model";
 import {ApiService} from "../core/api.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import { UrlSerializer } from '@angular/router';
+
 
 @Component({
   selector: 'app-list-application',
@@ -11,8 +14,9 @@ import {ApiService} from "../core/api.service";
 export class ListApplicationComponent implements OnInit {
 
   applications: Application[];
+  searchForm: FormGroup;
 
-  constructor(private router: Router, private apiService: ApiService) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ApiService, private serializer: UrlSerializer) { }
 
   ngOnInit() {
     if(!window.localStorage.getItem('token')) {
@@ -23,26 +27,50 @@ export class ListApplicationComponent implements OnInit {
       .subscribe( data => {
           this.applications = data.body;
       });
+      this.searchForm = this.formBuilder.group({
+        type: [],
+        status: [],
+        beforeDate: [],
+        afterDate: [],
+        
+      });
   }
 
   deleteApplication(application: Application): void {
-    console.log('application')
     this.apiService.deleteApplication(application.id)
-      .subscribe( data => {
-        if (data.status == 200) {
-          this.applications = this.applications.filter(a => a !== application);
-        }
-      })
+      .subscribe((data) => {
+        this.applications = this.applications.filter(a => a !== application);
+        window.alert('Application deleted')
+      },
+      (error)=> {window.alert(error.message);})
   };
 
   editApplication(application: Application): void {
-    window.localStorage.removeItem("editApplicationId");
-    window.localStorage.setItem("editApplicationId", application.id.toString());
-    this.router.navigate(['edit-application']);
+    // window.localStorage.removeItem("editApplicationId");
+    // window.localStorage.setItem("editApplicationId", application.id.toString());
+    this.router.navigate(['edit-application'], { queryParams: { id: application.id, type: application.type, days: application.days }});
   };
 
   addApplication(): void {
     this.router.navigate(['add-application']);
   };
+
+  search(): void {
+    var searchData = this.searchForm.value;
+    const queryParamTree = this.router.createUrlTree([], { queryParams: { type: searchData.type, status: searchData.status,
+       beforeDate: searchData.beforeDate, afterDate: searchData.afterDate} });
+    this.apiService.filterApplications(this.serializer.serialize(queryParamTree))
+    .subscribe((data) => {
+      this.applications = data.body;
+    },
+    (error)=> {})
+    this.searchForm = this.formBuilder.group({
+      type: [],
+      status: [],
+      beforeDate: [],
+      afterDate: [],
+      
+    });
+  }
 }
 

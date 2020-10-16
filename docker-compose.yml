@@ -1,13 +1,5 @@
 version: "3"
 services:
-  # employee-jdbc:
-  #  image: employee-jdbc
-  #  ports:
-  #    - "8080:8080"
-  #  networks:
-  #    - employee-mysql
-  #  depends_on:
-  #    - mysqldb
 
   mysqldb:
     image: "mysql/mysql-server:5.7"

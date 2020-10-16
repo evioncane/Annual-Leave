@@ -25,11 +25,44 @@ export class HeaderComponent implements OnInit {
   }
 
   isLoggedIn() {
+    var currentUrl = this.router.url;
+    if (currentUrl == '/' || currentUrl == '/login'){
+      return false;
+    }
     if (localStorage.getItem('roles') == null) {
       return false;
     }
     else {
       return true;
     }
+  }
+
+  isAdmin() {
+    if (localStorage.getItem('roles').indexOf('ROLE_ADMIN') >= 0){
+      return true;
+    }
+  }
+  goToAdmin() {
+    this.router.navigate(['admin-list-user']);
+  }
+
+  isSupervisor() {
+    if (localStorage.getItem('roles').indexOf('ROLE_SUPERVISOR') >= 0) {
+      return true;
+    }
+  }
+
+  goToSupervisor() {
+    this.router.navigate(['supervisor-list-application']);
+  }
+
+  isUser(){
+    if (localStorage.getItem('roles').indexOf('ROLE_USER') >= 0) {
+      return true;
+    }
+  }
+
+  goToUser() {
+    this.router.navigate(['list-application']);
   }
 }

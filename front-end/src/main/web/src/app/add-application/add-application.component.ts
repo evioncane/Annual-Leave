@@ -16,7 +16,6 @@ export class AddApplicationComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,private router: Router, private apiService: ApiService) { }
 
   addForm: FormGroup;
-
   datetimepicker: DateTimePicker;
 
   ngOnInit() {
@@ -33,18 +32,21 @@ export class AddApplicationComponent implements OnInit {
 
     // console.log("Date is:" + this.datetimepicker.value.toISOString())
     // this.datetimepicker.appendTo('#datetimepicker');
-    // this.addForm = this.formBuilder.group({
-    //   type: ['', Validators.required],
-    //   days: ['', Validators.required],
-    //   date: [this.datetimepicker.value.toISOString(), Validators.required]
-    // });
+    this.addForm = this.formBuilder.group({
+      type: ['', Validators.required],
+      days: ['', Validators.required]
+    });
 
   }
 
   onSubmit() {
     var app = this.addForm.value;
     this.apiService.createApplication(app.type, app.days)
-      .subscribe( data => {
+      .subscribe( (data) => {
+        this.router.navigate(['list-application']);
+      },
+      (error) => {
+        window.alert(error.error.message)
         this.router.navigate(['list-application']);
       });
   }

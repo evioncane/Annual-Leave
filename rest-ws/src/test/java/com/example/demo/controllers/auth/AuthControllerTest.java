@@ -74,7 +74,7 @@ public class AuthControllerTest extends TestHelper {
         JwtLogInDetails jwtLogInDetails = logIn("user", "test");
         String jwt = jwtLogInDetails.getToken();
         String message = updatePassword("test", "test2", "test2", jwt);
-        assertEquals(PASSWORDS_UPDATED, message);
+        assertTrue(message.contains(PASSWORDS_UPDATED));
     }
 
     @Test

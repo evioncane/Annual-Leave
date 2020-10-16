@@ -16,6 +16,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './common/header/header.component';
 import { SupervisorListApplicationComponent } from './supervisor-list-application/supervisor-list-application.component';
 import { AdminListUserComponent } from './admin-list-user/admin-list-user.component';
+import {MatIconModule} from '@angular/material/icon';
+import { EvaluateApplicationComponent } from './evaluate-application/evaluate-application.component';
+import { AdminAddUserComponent } from './admin-add-user/admin-add-user.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +30,8 @@ import { AdminListUserComponent } from './admin-list-user/admin-list-user.compon
     HeaderComponent,
     SupervisorListApplicationComponent,
     AdminListUserComponent,
+    EvaluateApplicationComponent,
+    AdminAddUserComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,6 +40,7 @@ import { AdminListUserComponent } from './admin-list-user/admin-list-user.compon
     HttpClientModule,
     MatToolbarModule,
     BrowserAnimationsModule,
+    MatIconModule,
   ],
   providers: [ApiService, {provide: HTTP_INTERCEPTORS,
     useClass: TokenInterceptor,

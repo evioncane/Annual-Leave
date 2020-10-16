@@ -167,6 +167,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (applicationEntity.getStatus() != Status.PENDING) {
             throw new ApplicationException("Cannot change the status of evaluated application!");
         }
+        if (type == applicationEntity.getType() && days.equals(applicationEntity.getDays())) {
+            throw new ApplicationException("The request changes nothing in the application!");
+        }
+        if (type != null) {
+            applicationEntity.setType(type);
+        }
+        if (days != null) {
+            applicationEntity.setDays(days);
+        }
         this.applicationRepository.save(applicationEntity);
     }
 
@@ -198,7 +207,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private void sendNotificationEmail(String subject, String text, String... receivers) {
         try {
-            this.emailService.sendEmail(subject, text, receivers);
+            // this.emailService.sendEmail(subject, text, receivers);
             Arrays.stream(receivers).forEach(receiver -> logger.debug("Email to {} sent successfully!", receiver));
 
         } catch (Exception e) {

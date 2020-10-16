@@ -3,6 +3,7 @@ package com.example.demo.controllers.application;
 import com.example.demo.exceptions.application.ApplicationException;
 import com.example.demo.model.ApplicationType;
 import com.example.demo.model.Status;
+import com.example.demo.payloads.MessageResponse;
 import com.example.demo.payloads.application.ApplicationEvaluationRequest;
 import com.example.demo.service.application.ApplicationService;
 import com.example.demo.service.dto.Application;
@@ -46,14 +47,14 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/supervisor-list-application")
     @PreAuthorize("hasRole('SUPERVISOR')")
     public ResponseEntity<?> getApplications(@RequestParam(required = false) String username,
                                              @RequestParam(required = false) ApplicationType type,
                                              @RequestParam(required = false) Status status,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate) {
-        List<Application> applicationList = this.applicationService.getAll(username, type, status, fromDate, toDate);
+                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date beforeDate,
+                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date afterDate) {
+        List<Application> applicationList = this.applicationService.getAll(username, type, status, beforeDate, afterDate);
         return ResponseEntity.ok(applicationList);
     }
 
@@ -62,30 +63,31 @@ public class ApplicationController {
     public ResponseEntity<?> evaluateApplication(@Valid @RequestBody ApplicationEvaluationRequest request) {
         try {
             this.applicationService.evaluate(request.getId(), request.getStatus(), request.getMessage());
-            return ResponseEntity.ok(APPLICATION_EVALUATED_MESSAGE);
+            return ResponseEntity.ok(new MessageResponse(APPLICATION_EVALUATED_MESSAGE));
         } catch (ApplicationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(e.getMessage()));
         }
     }
 
-    @GetMapping("/personal/all")
+    @GetMapping("/personal/list-application")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getPersonalApplications(@RequestParam(required = false) ApplicationType type,
                                                      @RequestParam(required = false) Status status,
-                                                     @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-                                                     @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate) {
-        List<Application> applicationList = this.applicationService.getAll(type, status, fromDate, toDate);
+                                                     @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date beforeDate,
+                                                     @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date afterDate) {
+        List<Application> applicationList = this.applicationService.getAll(type, status, beforeDate, afterDate);
         return ResponseEntity.ok(applicationList);
     }
 
     @PostMapping("/personal")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> createApplication(@RequestParam ApplicationType type, @RequestParam int days) {
+    public ResponseEntity<?> createApplication(@RequestParam @NotNull ApplicationType type,
+                                               @RequestParam @NotNull Integer days) {
         try {
             this.applicationService.createUserApplication(type, days);
-            return ResponseEntity.ok(APPLICATION_CREATED_MESSAGE);
+            return ResponseEntity.ok(new MessageResponse(APPLICATION_CREATED_MESSAGE));
         } catch (ApplicationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(e.getMessage()));
         }
     }
 
@@ -96,9 +98,9 @@ public class ApplicationController {
                                                @RequestParam(required = false) Integer days) {
         try {
             this.applicationService.updateUserApplication(id, type, days);
-            return ResponseEntity.ok(APPLICATION_UPDATED_MESSAGE);
+            return ResponseEntity.ok(new MessageResponse(APPLICATION_UPDATED_MESSAGE));
         } catch (ApplicationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(e.getMessage()));
         }
     }
 
@@ -107,12 +109,12 @@ public class ApplicationController {
     public ResponseEntity<?> deleteApplication(@NotNull @PathVariable Long id){
         try {
             this.applicationService.deleteApplication(id);
-            return ResponseEntity.ok(APPLICATION_DELETED_MESSAGE);
+            return ResponseEntity.ok(new MessageResponse(APPLICATION_DELETED_MESSAGE));
         } catch (ApplicationException e) {
             return ResponseEntity.ok(e.getMessage());
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(SOMETHING_WENT_WRONG);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse(SOMETHING_WENT_WRONG));
         }
     }
 }

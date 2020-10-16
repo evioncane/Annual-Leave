@@ -12,6 +12,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.security.services.user.UserDetailsImpl;
 import com.example.demo.service.dto.JwtLogInDetails;
+import com.example.demo.service.dto.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -105,6 +106,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void logOut() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(null);
+    }
+
+    /**
+     * Lists all users
+     * @return a set of users
+     */
+    @Override
+    public Set<User> getAllUsers() {
+        return this.userRepository.findAll()
+                .stream()
+                .map(User::new)
+                .collect(Collectors.toSet());
     }
 
     /**

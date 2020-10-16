@@ -1,5 +1,5 @@
 import { Component, OnInit , Inject} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Application} from "../model/application.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {first} from "rxjs/operators";
@@ -18,7 +18,9 @@ export class EditApplicationComponent implements OnInit {
   application: Application;
   editForm: FormGroup;
   datetimepicker: DateTimePicker;
-  constructor(private formBuilder: FormBuilder,private router: Router, private apiService: ApiService) { }
+  id: number;
+
+  constructor(private formBuilder: FormBuilder,  private route: ActivatedRoute, private router: Router, private apiService: ApiService) { }
 
   ngOnInit() {
     if(!window.localStorage.getItem('token')) {
@@ -37,6 +39,13 @@ export class EditApplicationComponent implements OnInit {
       type: ['', Validators.required],
       days: ['', Validators.required]
     });
+    this.route
+      .queryParams
+      .subscribe(params => {
+        this.id = parseInt(params['id']);
+        this.editForm.value.type = params['type'];
+        this.editForm.value.days = params['days'];
+      });
     // this.apiService.getApplicationById(+postId)
     //   .subscribe( data => {
     //     this.editForm.setValue(data.result);
@@ -63,19 +72,15 @@ export class EditApplicationComponent implements OnInit {
 
   onSubmit() {
     var app = this.editForm.value
-    this.apiService.updateApplication(app.id, app.type, app.days)
+    this.apiService.updateApplication(this.id, app.type, app.days)
       .pipe(first())
       .subscribe(
         data => {
-          if(data.status === 200) {
-            alert('Application updated successfully.');
-            this.router.navigate(['list-application']);
-          }else {
-            alert(data.message);
-          }
+          alert('Application updated successfully.');
+          this.router.navigate(['list-application']);
         },
         error => {
-          alert(error);
+          alert(error.message);
         });
   }
 

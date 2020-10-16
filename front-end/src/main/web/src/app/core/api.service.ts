@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import {Application} from "../model/application.model";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from "rxjs/index";
-import {ApiResponse} from "../model/api.response";
+import {EvaluationRequest} from "../model/application.model";
+import { User } from '../model/user.model';
+
 
 const AUTH_API = 'http://localhost:8080/auth';
 const APPLICATION_API = 'http://localhost:8080/application';
@@ -22,17 +24,38 @@ export class ApiService {
     return this.http.post<any>(AUTH_API + '/logout', {observe: 'response'});
   }
 
-  // register(registerPayload): Observable<ApiResponse> {
-  //   return this.http.post<ApiResponse>('http://localhost:8080/' + 'register', registerPayload);
-  // }
-
   getApplications() : Observable<any> {
-    return this.http.get<any>(USER_APPLICATION_API + '/all', {observe: 'response'});
+    return this.http.get<any>(USER_APPLICATION_API + '/list-application', {observe: 'response'});
   }
 
-  // getPostById(id: number): Observable<ApiResponse> {
-  //   return this.http.get<ApiResponse>(this.baseUrl + id);
-  // }
+  filterApplications(path: string) : Observable<any> {
+    return this.http.get<any>(USER_APPLICATION_API + path, {observe: 'response'});
+  }
+
+  getAllApplications() : Observable<any> {
+    return this.http.get<any>(APPLICATION_API + '/supervisor-list-application', {observe: 'response'});
+  }
+
+  filterAllApplications(path: string) : Observable<any> {
+    return this.http.get<any>(APPLICATION_API + path, {observe: 'response'});
+  }
+
+  getAllUsers() : Observable<any> {
+    return this.http.get<any>(AUTH_API + '/all', {observe: 'response'});
+  }
+
+  register(registerPayload: User) : Observable<any> {
+    return this.http.post<any>(AUTH_API + '/create/user', registerPayload, {observe: 'response'});
+  }
+
+  deleteUser(username: string) : Observable<any> {
+    return this.http.delete<any>(AUTH_API + '/delete/' + username, {observe: 'response'})
+  }
+
+  evaluateApplication(id: number, status: string, message: string) : Observable<any> {
+    var evaluationReq = new EvaluationRequest(id, status, message);
+    return this.http.post<any>(APPLICATION_API + '/evaluate', evaluationReq, {observe: 'response'});
+  }
 
   createApplication(type: string, days: number): Observable<any> {
     return this.http.post<any>(USER_APPLICATION_API + '?days=' + days + '&type=' + type, {observe: 'response'});

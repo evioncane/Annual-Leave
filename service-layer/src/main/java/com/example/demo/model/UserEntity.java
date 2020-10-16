@@ -52,7 +52,7 @@ public class UserEntity {
     @ManyToMany(targetEntity = RoleEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<RoleEntity> roles;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private Set<ApplicationEntity> applicationEntitySet;
 
     public UserEntity(String username, String email, String password, String firstName, String lastName, Date startDate,

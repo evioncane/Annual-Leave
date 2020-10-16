@@ -1,3 +1,36 @@
-<p>
-  admin-list-user works!
-</p>
+<div class="col-md-6 post-container">
+  <h2 style="margin: auto; margin-bottom: 3%; color: midnightblue;"> User Details</h2>
+
+  <div class="col-2">
+    <button class="btn apply-button" (click)="addUser()">Add user<mat-icon>add</mat-icon></button>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="hidden">Number</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Registered Date</th>
+        <th>Roles</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users; let i = index;">
+        <td>{{i + 1}}</td>
+        <td>{{user.username}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td>{{user.registeredDate  | date:'medium'}}</td>
+        <td>{{user.roles}}</td>
+        <td><button class="btn btn-danger"
+            (click)="deleteUser(user)">Delete</button></td>
+        <td><button class="btn apply-button"
+            (click)="editUser(user)">Modify</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

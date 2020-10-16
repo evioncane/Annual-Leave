@@ -1,29 +1,74 @@
 <div class="col-md-6 post-container">
-  <h2 style="margin: auto; color: midnightblue;"> Application Details</h2>
-  <button class="btn apply-button" style="width:auto" (click)="addApplication()">Apply for Vacation or Compensation</button>
+  <h2 style="margin: auto; margin-bottom: 3%; color: midnightblue;"> Application Details</h2>
+  <form [formGroup]="searchForm" (ngSubmit)="search()">
+    <div class="row">
+      <div class="col-2">
+        <button class="btn apply-button" (click)="addApplication()">Apply<mat-icon>add</mat-icon></button>
+      </div>
+      <div class="col-2">
+        <select class="form-control" id="exampleFormControlSelect1" formControlName="type">
+          <option value = null>-- type</option>
+          <option value="VACATION">VACATION</option>
+          <option value="COMPENSATION">COMPENSATION</option>
+        </select>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <select class="form-control" id="exampleFormControlSelect2" formControlName="status">
+            <option value= null>-- status</option>
+            <option value="PENDING">PENDING</option>
+            <option value="REJECTED">REJECTED</option>
+            <option value="APPROVED">APPROVED</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <input type="date" class="form-control" placeholder="Search" formControlName="beforeDate" title="Minimum date">
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <input type="date" class="form-control" placeholder="Search" formControlName="afterDate" title="Maximum date">
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <button type="submit" class="form-control btn-success">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
   <table class="table table-striped">
     <thead>
-    <tr>
-      <th class="hidden">Id</th>
-      <th>Type</th>
-      <th>Days</th>
-      <th>Status</th>
-      <th>Message</th>
-      <th>Date</th>
-      <th>Delete/Modify</th>
-    </tr>
+      <tr>
+        <th class="hidden">Number</th>
+        <th>Type</th>
+        <th>Days</th>
+        <th>Status</th>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Modify</th>
+        <th>Delete</th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let application of applications">
-      <td class="hidden">{{application.id}}</td>
-      <td>{{application.type}}</td>
-      <td>{{application.days}}</td>
-      <td>{{application.status}}</td>
-      <td>{{application.message}}</td>
-      <td>{{application.date | date:'medium'}}</td>
-      <td><button [hidden]="application.status != 'PENDING'" class="btn btn-danger" (click)="deleteApplication(application)">Delete</button>
-        <button  [hidden]="application.status != 'PENDING'" class="btn apply-button" (click)="editApplication(application)" style="margin-left: 20px;">Modify</button></td>
-    </tr>
+      <tr *ngFor="let application of applications; let i = index;">
+        <td>{{i + 1}}</td>
+        <td>{{application.type}}</td>
+        <td>{{application.days}}</td>
+        <td>{{application.status}}</td>
+        <td>{{application.message}}</td>
+        <td>{{application.date | date:'medium'}}</td>
+        <td><button [hidden]="application.status != 'PENDING'" class="btn btn-danger"
+            (click)="deleteApplication(application)">Delete</button></td>
+        <td><button [hidden]="application.status != 'PENDING'" class="btn apply-button"
+            (click)="editApplication(application)">Modify</button></td>
+      </tr>
     </tbody>
   </table>
 </div>

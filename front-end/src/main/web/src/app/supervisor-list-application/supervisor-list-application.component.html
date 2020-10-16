@@ -1,3 +1,77 @@
-<p>
-  supervisor-list-application works!
-</p>
+<div class="col-md-6 post-container">
+  <h2 style="margin: auto; margin-bottom: 3%; color: midnightblue;"> Supervisor Details</h2>
+  <form [formGroup]="searchForm" (ngSubmit)="search()">
+    <div class="row">
+      <div class="col-2">
+        <select class="form-control" id="exampleFormControlSelect1" formControlName="type">
+          <option value=null>-- type</option>
+          <option value="VACATION">VACATION</option>
+          <option value="COMPENSATION">COMPENSATION</option>
+        </select>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <select class="form-control" id="exampleFormControlSelect2" formControlName="status">
+            <option value=null>-- status</option>
+            <option value="PENDING">PENDING</option>
+            <option value="REJECTED">REJECTED</option>
+            <option value="APPROVED">APPROVED</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <input type="date" class="form-control" placeholder="Search" formControlName="beforeDate"
+            title="Minimum date">
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <input type="date" class="form-control" placeholder="Search" formControlName="afterDate" title="Maximum date">
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <input type="text" class="form-control" placeholder="Username" formControlName="username">
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="form-group has-search">
+          <span class="fa fa-search form-control-feedback"></span>
+          <button type="submit" class="form-control btn-success">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="hidden">Number</th>
+        <th>Type</th>
+        <th>Days</th>
+        <th>Status</th>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Username</th>
+        <th>Evaluate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let application of applications; let i = index;">
+        <td>{{i + 1}}</td>
+        <td>{{application.type}}</td>
+        <td>{{application.days}}</td>
+        <td>{{application.status}}</td>
+        <td>{{application.message}}</td>
+        <td>{{application.date | date:'medium'}}</td>
+        <td>{{application.username}}</td>
+        <td><button class="btn btn-success"
+            (click)="evaluate(application)">Evaluate</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
